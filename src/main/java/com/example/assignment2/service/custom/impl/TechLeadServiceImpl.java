@@ -54,7 +54,7 @@ public class TechLeadServiceImpl implements TechLeadService {
     }
 
     @Override
-    public void updateProject(Integer id, String name, String contactNo, byte[] photo) {
+    public void updateTechLead(Integer id, String name, String contactNo, byte[] photo) {
         techLeadRepository.updateTechLeadById(id,name,contactNo,photo);
     }
 }

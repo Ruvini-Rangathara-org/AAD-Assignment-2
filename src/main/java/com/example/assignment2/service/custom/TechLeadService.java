@@ -4,5 +4,5 @@ import com.example.assignment2.dto.TechLeadDto;
 import com.example.assignment2.service.SuperService;
 
 public interface TechLeadService extends SuperService<TechLeadDto> {
-    void updateProject(Integer id, String name, String contactNo, byte[] photo);
+    void updateTechLead(Integer id, String name, String contactNo, byte[] photo);
 }

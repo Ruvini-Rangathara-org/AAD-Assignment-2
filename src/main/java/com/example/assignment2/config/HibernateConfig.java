@@ -15,6 +15,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Configuration
@@ -22,51 +24,51 @@ import java.util.Properties;
 @PropertySource("classpath:application.properties")
 @EnableJpaRepositories("com.example.assignment2.repository")
 public class HibernateConfig {
-
-    private final Environment env;
+    public final Environment env;
 
     @Autowired
     public HibernateConfig(Environment env) {
         this.env = env;
     }
 
+    // Factory create
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);
         emf.setPackagesToScan("com.example.assignment2.entity");
-        emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        emf.setJpaProperties(hibernateProperties());
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        emf.setJpaVendorAdapter(vendorAdapter);
+        emf.setJpaPropertyMap(hibernateProperties()); // Hibernate property map
         return emf;
     }
 
+    // Data Source create
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        dataSource.setUsername(env.getProperty("spring.datasource.username"));
-        dataSource.setPassword(env.getProperty("spring.datasource.password"));
-        return dataSource;
+        DriverManagerDataSource dmd = new DriverManagerDataSource();
+        dmd.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dmd.setUrl(env.getProperty("spring.datasource.url"));
+        dmd.setUsername(env.getProperty("spring.datasource.username"));
+        dmd.setPassword(env.getProperty("spring.datasource.password"));
+        return dmd;
     }
 
+    // Transaction
     @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+    public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean emf) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory(dataSource).getObject());
+        transactionManager.setEntityManagerFactory(emf.getObject());
         return transactionManager;
     }
 
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    private Properties hibernateProperties() {
-        Properties properties = new Properties();
-        properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
-        properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
-        properties.put("hibernate.show_sql", env.getProperty("spring.jpa.show-sql"));
-        return properties;
+    // Load Hibernate Properties
+    private Map<String, String> hibernateProperties() {
+        Map<String, String> hibernateProperties = new HashMap<>();
+        hibernateProperties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
+        hibernateProperties.put("hibernate.show_sql", env.getProperty("spring.jpa.show-sql"));
+        hibernateProperties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
+        hibernateProperties.put("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));
+        return hibernateProperties;
     }
 }

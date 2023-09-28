@@ -39,6 +39,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public <S extends ProjectDto> S save(S entity) {
+        System.out.println(entity.getCode());
+        System.out.println(entity.getTitle());
+        System.out.println(entity.getDescription());
+
         return (S) convertor.toProjectDto(projectRepository.save(convertor.toProjectEntity(entity)));
     }
 
@@ -54,6 +58,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateProject(Integer code, String title, String description) {
+        System.out.println("in project service impl");
+        System.out.println(code);
+        System.out.println(title);
+        System.out.println(description);
+        System.out.println();
         projectRepository.updateProjectById(code,title,description);
     }
 }

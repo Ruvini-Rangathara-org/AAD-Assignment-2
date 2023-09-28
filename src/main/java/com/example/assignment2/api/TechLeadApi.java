@@ -2,7 +2,9 @@ package com.example.assignment2.api;
 
 import com.example.assignment2.dto.TechLeadDto;
 import com.example.assignment2.service.custom.TechLeadService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/tech")
 
 public class TechLeadApi {
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
     @Autowired
     TechLeadService techLeadService;
@@ -21,10 +28,9 @@ public class TechLeadApi {
         techLeadDto.setName(name);
         techLeadDto.setContactNo(contactNo);
         techLeadDto.setPhoto(photo);
-        techLeadDto.setId(1234);
+        techLeadDto.setId(1235);
 
         return techLeadService.save(techLeadDto);
-
     }
 
     @DeleteMapping("{code}")

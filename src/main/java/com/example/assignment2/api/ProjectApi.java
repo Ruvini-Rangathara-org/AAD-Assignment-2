@@ -15,16 +15,20 @@ public class ProjectApi {
     @Autowired
     ProjectService projectService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ProjectDto saveProject(@RequestPart String title, @RequestPart String description) {
-
-        ProjectDto projectDto = new ProjectDto();
-        projectDto.setTitle(title);
-        projectDto.setDescription(description);
-        projectDto.setCode(1234);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    ProjectDto saveProject(@RequestBody ProjectDto projectDto) {
+        projectDto.setCode(123);
 
         return projectService.save(projectDto);
 
+        // Body -> raw
+        // {
+        //    "title": "user1",
+        //    "description": "pwd1"
+        //}
+
+        //http://localhost:8080/test/api/v1/project           -> POST
+        //Content-type : application/json
     }
 
     @DeleteMapping("{code}")
@@ -33,9 +37,18 @@ public class ProjectApi {
     }
 
     @PutMapping("{code}")
-    void updateProject(@PathVariable Integer code, @RequestBody ProjectDto projectDto) {
-        projectService.updateProject(code, projectDto.getTitle(), projectDto.getDescription());
+    void updateProject(@PathVariable int code, @RequestBody ProjectDto request) {
+        projectService.updateProject(code, request.getTitle(), request.getDescription());
     }
+    // Body -> raw
+    // {
+    //    "title": "user1",
+    //    "description": "pwd1"
+    //}
+
+    //http://localhost:8080/test/api/v1/project/123            -> PUT
+    //Content-type : application/json
+
 
     @GetMapping(value = "{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     ProjectDto getSelectedProject(@PathVariable Integer code) {

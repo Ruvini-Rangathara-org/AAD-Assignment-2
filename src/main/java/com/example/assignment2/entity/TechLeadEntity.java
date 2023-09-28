@@ -1,5 +1,6 @@
 package com.example.assignment2.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
@@ -18,6 +19,7 @@ public class TechLeadEntity implements SuperEntity{
     String name;
     String contactNo;
     @Lob
+    @Column(columnDefinition = "BLOB")
     byte[] photo;
 
 }
